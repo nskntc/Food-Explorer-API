@@ -1,7 +1,7 @@
 const knex = require("../database/knex")
 const AppError = require("../utils/AppError")
 const { compare } = require("bcryptjs")
-const { sign } = require("jsonwebtoken")
+const { sign, verify } = require("jsonwebtoken")
 const authConfig = require("../configs/auth")
 
 class SessionsController{
@@ -16,7 +16,9 @@ class SessionsController{
 
         const { secret, expiresIn } = authConfig.jwt
 
-        const token = sign({}, secret, {
+        const isAdmin = user.roles === "admin"
+
+        const token = sign({ isAdmin: isAdmin }, secret, {
             subject: String(user.id),
             expiresIn
         })

@@ -10,10 +10,11 @@ const ensureAthenticaded = (request, response, next) => {
     const [, token] = authHeader.split(" ")
 
     try {
-        const { sub: user_id } =  verify(token, authConfig.jwt.secret)
+        const { isAdmin, sub: user_id } =  verify(token, authConfig.jwt.secret)
 
         request.user = {
-            id: Number(user_id)
+            id: Number(user_id),
+            isAdmin
         }
 
         return next()

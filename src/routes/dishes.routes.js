@@ -3,6 +3,7 @@ const { Router } = require("express")
 const DishesController = require("../controllers/DishesController")
 
 const ensureAthenticaded = require("../middlewares/ensureAuthenticaded")
+const ensureIsAdmin = require("../middlewares/ensureIsAdmin")
 
 const dishesRoutes = Router()
 const dishesController = new DishesController()
