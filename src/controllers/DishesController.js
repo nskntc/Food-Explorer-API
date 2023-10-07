@@ -76,7 +76,7 @@ class DishesController {
             await knex('ingredients').insert(updatedIngredients);
         }
 
-        return response.status(201).json()
+        return response.status(204).json()
     }
 
     async show(request, response){
@@ -87,7 +87,7 @@ class DishesController {
 
         const ingredients = await knex("ingredients").where({ dish_id: id }).orderBy("name")
 
-        return response.status(201).json({
+        return response.status(200).json({
             ...dish,
             ingredients
         })
@@ -133,7 +133,7 @@ class DishesController {
             }
         })
 
-        return response.status(201).json(DisheWithIngredients)
+        return response.status(200).json(DisheWithIngredients)
     }
 }
 
