@@ -10,6 +10,8 @@ class UsersController {
         if(!email) throw new AppError("Email não informado!", 422)
         if(!password) throw new AppError("Senha não informada!", 422)
 
+        if(password.length < 6) throw new AppError("A senha deve possuir pelo menos 6 caracteres!", 422)
+
         const checkUserExists = await knex("users").where({ email }).first()
         if(checkUserExists) throw new AppError("Email já cadastrado!", 422)
 
