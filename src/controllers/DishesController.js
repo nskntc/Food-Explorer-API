@@ -5,10 +5,11 @@ const DiskStorage = require("../providers/DiskStorage")
 class DishesController {
     async create(request, response){
         const { name, description, price, category, ingredients } = request.body
+        const fileName = request.file.filename
 
-        const fileName = null
+        const ingredientsArray = ingredients.split(",")
 
-        if(!name || !description || !price || !category || !ingredients){
+        if(!name || !description || !price || !category || !ingredients || !fileName){
             throw new AppError("Por favor, preencher todos os campos!", 422)
         }
 
@@ -18,9 +19,7 @@ class DishesController {
         }
 
         const diskStorage = new DiskStorage()
-        if(fileName) {
-            const img = await diskStorage.saveFile(fileName)
-        }
+        const img = await diskStorage.saveFile(fileName)
 
         const [dish_id] = await knex("dishes").insert({
             name,
@@ -30,7 +29,7 @@ class DishesController {
             img: `${fileName ? img : null}`
         })
 
-        const ingredientsInsert = ingredients.map(ingredient => {
+        const ingredientsInsert = ingredientsArray.map(ingredient => {
             return{
                 dish_id,
                 name: ingredient
