@@ -12,7 +12,7 @@ const upload = multer(uploadConfig.MULTER)
 const dishesRoutes = Router()
 const dishesController = new DishesController()
 
-dishesRoutes.use(ensureAthenticaded)
+// dishesRoutes.use(ensureAthenticaded)
 dishesRoutes.post("/", ensureIsAdmin, upload.single("img"), dishesController.create)
 dishesRoutes.put("/:id", dishesController.update)
 dishesRoutes.get("/:id", dishesController.show)
