@@ -12,10 +12,11 @@ const upload = multer(uploadConfig.MULTER)
 const dishesRoutes = Router()
 const dishesController = new DishesController()
 
-// dishesRoutes.use(ensureAthenticaded)
+dishesRoutes.use(ensureAthenticaded)
 dishesRoutes.post("/", ensureIsAdmin, upload.single("img"), dishesController.create)
-dishesRoutes.put("/:id", dishesController.update)
+dishesRoutes.put("/:id", ensureIsAdmin, upload.single("img"), dishesController.update)
 dishesRoutes.get("/:id", dishesController.show)
 dishesRoutes.get("/", dishesController.index)
+dishesRoutes.delete("/:id", ensureIsAdmin, dishesController.delete)
 
 module.exports = dishesRoutes

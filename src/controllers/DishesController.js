@@ -43,6 +43,10 @@ class DishesController {
     async update(request, response){
         const { id } = request.params
         const { name, description, price, category, ingredients } = request.body
+        let fileName = null
+        let img = null
+        
+        if(request.file) fileName = request.file.filename
 
         if(!name || !description || !price || !category || !ingredients){
             throw new AppError("Por favor, preencher todos os campos!", 422)
@@ -51,11 +55,21 @@ class DishesController {
         const dish = await knex("dishes").where({ id }).first()
         if(!dish) throw new AppError("Prato não cadastrado!", 404)
 
+        const ingredientsArray = ingredients.split(",")
+
+        const diskStorage = new DiskStorage()
+
+        if(fileName){
+            diskStorage.deleteFile(dish.img)
+            img = await diskStorage.saveFile(fileName)
+        }
+
         const updatedDish = {
             name,
             description,
             price,
             category,
+            img: img ?? dish.img,
             updated_at: knex.fn.now()
         }
 
@@ -63,8 +77,8 @@ class DishesController {
         .where({ id })
         .update(updatedDish)
 
-        if(ingredients){
-            const updatedIngredients = ingredients.map(ingredient => {
+        if(ingredientsArray){
+            const updatedIngredients = ingredientsArray.map(ingredient => {
                 return{
                     dish_id: id,
                     name: ingredient
@@ -129,6 +143,18 @@ class DishesController {
         })
 
         return response.status(200).json(DisheWithIngredients)
+    }
+
+    async delete(request, response){
+        const { id } = request.params
+        const diskStorage = new DiskStorage()
+
+        const dish = await knex("dishes").where({ id }).first()
+        diskStorage.deleteFile(dish.img)
+
+        await knex("dishes").where({ id }).delete()
+
+        return response.json()
     }
 }
 
