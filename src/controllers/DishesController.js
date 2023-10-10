@@ -5,7 +5,9 @@ const DiskStorage = require("../providers/DiskStorage")
 class DishesController {
     async create(request, response){
         const { name, description, price, category, ingredients } = request.body
-        const fileName = request.file.filename
+        let fileName = null
+
+        if(request.file) fileName = request.file.filename
 
         const ingredientsArray = ingredients.split(",")
 
